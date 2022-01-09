@@ -2,24 +2,39 @@ import styles from './App.module.css';
 import {useEffect, useState} from "react";
 
 function App() {
-    const [flag, setFlag] = useState(false);
+    const [toDo, setToDo] = useState("");
+    const [toDos, setToDos] = useState([]);
 
-    const onClick = () => setFlag((prev) => !prev);
+    function onChange(event) {
+        setToDo(event.target.value);
+    }
 
-    function Hello() {
-        useEffect(() => {
-            console.log('created :)');
+    function onSubmit(event) {
+        event.preventDefault();
+        if (toDo === "") {
+            return;
+        }
 
-            return () => console.log('destroyed :(');
-        }, []);
-
-        return <h1>Hello</h1>
+        setToDos((current) => [toDo, ...current]);
+        setToDo("");
     }
 
     return (
         <div className={styles.title}>
-            {flag ? <Hello/> : null}
-            <button onClick={onClick}>{flag ? 'Hide' : 'Show'}</button>
+            <h1>My To Dos ({toDos.length})</h1>
+            <form onSubmit={onSubmit}>
+                <input
+                    value={toDo}
+                    onChange={onChange}
+                ></input>
+                <button>Send</button>
+            </form>
+            <hr/>
+            <ul>
+                {toDos.map((todo, index) => (
+                    <li key={index}>{todo}</li>
+                ))}
+            </ul>
         </div>
     );
 }
